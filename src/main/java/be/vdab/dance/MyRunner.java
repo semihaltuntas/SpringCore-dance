@@ -13,7 +13,7 @@ public class MyRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args)  {
+    public void run(String... args) {
         festivalService.findUitVerkocht().forEach(
                 festival -> System.out.println("uitverkocht festival: "+festival.getNaam())
         );
