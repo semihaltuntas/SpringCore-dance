@@ -1,5 +1,6 @@
 package be.vdab.dance.festival;
 
+import be.vdab.dance.exceptions.FestivalNietGevondenException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -99,5 +100,18 @@ public class FestivalRepository {
         jdbcClient.sql(sql)
                 .param(bedrag)
                 .update();
+    }
+
+    public void update(Festival festival) {
+        var sql = """
+                update festivals
+                set naam = ?,ticketsBeschikbaar = ?
+                where id = ?
+                """;
+        if (jdbcClient.sql(sql)
+                .params(festival.getNaam(), festival.getTicketsBeschikbaar(), festival.getId())
+                .update() == 0) {
+            throw new FestivalNietGevondenException(festival.getId());
+        }
     }
 }
