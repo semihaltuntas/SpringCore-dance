@@ -1,4 +1,4 @@
-package be.vdab.dance.festival;
+package be.vdab.dance.exceptions;
 
 public class FestivalNietGevondenException extends RuntimeException {
     private final long id;

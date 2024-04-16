@@ -1,5 +1,6 @@
 package be.vdab.dance.festival;
 
+import be.vdab.dance.exceptions.FestivalNietGevondenException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
@@ -9,8 +10,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.as;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
 @Import(FestivalRepository.class)
@@ -87,6 +87,24 @@ public class FestivalRepositoryTest {
         var aantalRecords = JdbcTestUtils.countRowsInTableWhere(jdbcClient, FESTIVALS_TABLE,
                 "reclameBudget = 110 and id =" + id);
         assertThat(aantalRecords).isOne();
+    }
+
+    @Test
+    void updateTicketsWijzigtHetAantalTickets() {
+        var id = festivalRepository.idVanTestFestival1();
+        var festival = new Festival(id, "test1", 3, BigDecimal.TEN);
+        festivalRepository.update(festival);
+        var aantalRecords = JdbcTestUtils.countRowsInTableWhere(jdbcClient, FESTIVALS_TABLE,
+                "ticketsBeschikbaar = 3 and id = " + id);
+        assertThat(aantalRecords).isOne();
+    }
+
+    @Test
+    void updateTicketsOnbestaandeFestivalMislukt() {
+        assertThatExceptionOfType(FestivalNietGevondenException.class).isThrownBy(
+                () -> festivalRepository.update(
+                        new Festival(Long.MAX_VALUE, "test", 1, BigDecimal.TEN)
+                ));
     }
 
 }
