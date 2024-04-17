@@ -30,7 +30,6 @@ public class Festival {
     public void annuleer(int tickets){
         ticketsBeschikbaar += tickets;
     }
-
     public long getId() {
         return id;
     }
